@@ -1,25 +1,33 @@
-import logo from './logo.svg';
-import './App.css';
+import React from "react";
+import firebase from "firebase";
+import { Switch, Route } from "react-router-dom";
+import { FIREBASE_CONFIG } from "./store/constants";
+import SignUp from "./view/SignUp/SignUp";
+import SignIn from "./view/SignIn/SignIn";
+import "./App.css";
 
-function App() {
+const App = () => {
+  React.useEffect(() => {
+    if (!firebase.apps.length) {
+      firebase.initializeApp(FIREBASE_CONFIG);
+    }
+  }, []);
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <Switch>
+        <Route path="/signIn" exact>
+          <SignIn />
+        </Route>
+        <Route path="/" exact>
+          <SignUp />
+        </Route>
+        <Route path="/signUp" exact>
+          <SignUp />
+        </Route>
+      </Switch>
     </div>
   );
-}
+};
 
 export default App;
