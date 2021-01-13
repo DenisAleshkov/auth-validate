@@ -3,13 +3,12 @@ import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import {
   signUp,
-  clearError,
-  clearMessage,
+  clearRegisterError,
+  clearRegisterMessage,
 } from "./../../store/actions/auth.action";
 import "./SignUp.scss";
 
 const SignUp = () => {
-
   const [validateError, setValidateError] = React.useState({});
   const [inputs, setInputs] = React.useState({
     email: "",
@@ -21,13 +20,21 @@ const SignUp = () => {
   const registerMessage = useSelector(
     (state) => state.AuthReducer.registerMessage
   );
-  
+
   const dispatch = useDispatch();
 
   React.useEffect(() => {
-    dispatch(clearMessage());
-    setValidateError({ ...registerError });
+    dispatch(clearRegisterMessage());
+    setValidateError(registerError);
   }, [registerError]);
+
+  React.useEffect(() => {
+    return () => {
+      dispatch(clearRegisterMessage());
+      dispatch(clearRegisterError());
+      setValidateError({});
+    };
+  }, []);
 
   const handleChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -35,18 +42,27 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errorField = isValidateField();
-    const noErrors = Object.keys({ ...errorField }).length === 0;
+    const errorFieldPassword = isValidateField(VALIDATORS_PASSWORD);
+    const errorFieldEmail = isValidateField(VALIDATORS_EMAIL);
+    const noErrors =
+      Object.keys({
+        ...errorFieldPassword,
+        ...errorFieldEmail,
+      }).length === 0;
     if (noErrors) {
-      dispatch(clearError());
+      dispatch(clearRegisterError());
+      setValidateError({});
       dispatch(signUp(inputs));
     } else {
-      dispatch(clearMessage());
-      setValidateError({ ...errorField });
+      dispatch(clearRegisterMessage());
+      setValidateError({
+        passwordError: errorFieldPassword,
+        emailError: errorFieldEmail,
+      });
     }
   };
 
-  const isValidateField = () => {
+  const isValidateField = (VALIDATORS) => {
     const errors = {};
     VALIDATORS.forEach((validator) => {
       const error = validator.validate();
@@ -124,28 +140,46 @@ const SignUp = () => {
     },
   };
 
-  const VALIDATORS = [
+  const VALIDATORS_PASSWORD = [
     PasswordLength,
     PasswordOnDigit,
     PasswordOnLetter,
     PasswordMatch,
-    EmailExist,
-    EmailValid,
   ];
 
-  const showErrors = () =>
-    Object.values(validateError).map((item) => (
-      <span key={item} className="error">
-        {item}
-      </span>
-    ));
+  const VALIDATORS_EMAIL = [EmailExist, EmailValid];
 
+  const showPasswordErrors = () => {
+    if (validateError.passwordError) {
+      return Object.values(validateError.passwordError).map((item) => (
+        <span key={item} className="error">
+          {item}
+        </span>
+      ));
+    }
+  };
+  const showEmailErrors = () => {
+    if (validateError.emailError) {
+      return Object.values(validateError.emailError).map((item) => (
+        <span key={item} className="error">
+          {item}
+        </span>
+      ));
+    }
+  };
+  const showRegisterErrors = () => {
+    return (
+      validateError.registerError && (
+        <span className="error">{validateError.registerError}</span>
+      )
+    );
+  };
   const showMessage = () => {
     return (
       registerMessage && <span className="message">{registerMessage}</span>
     );
   };
-
+  
   return (
     <div className="wrapper">
       <div className="form-wrapper">
@@ -157,16 +191,19 @@ const SignUp = () => {
               type="email"
               name="email"
               id="email"
+              className={`${validateError.emailError && "error-input"}`}
               onChange={handleChange}
               noValidate
             />
           </div>
+          <div className="info">{showEmailErrors()}</div>
           <div className="password">
             <label htmlFor="password">Password</label>
             <input
               type="password"
               name="password"
               id="password"
+              className={`${validateError.passwordError && "error-input"}`}
               onChange={handleChange}
               noValidate
             />
@@ -177,19 +214,23 @@ const SignUp = () => {
               type="confirmPassword"
               name="confirmPassword"
               id="confirmPassword"
+              className={`${
+                validateError.passwordError?.matchError && "error-input"
+              }`}
               onChange={handleChange}
               noValidate
             />
           </div>
           <div className="info">
+            {showPasswordErrors()}
             {showMessage()}
-            {showErrors()}
+            {showRegisterErrors()}
           </div>
           <div className="submit">
             <button onClick={handleSubmit}>Create</button>
           </div>
           <div>
-            <Link to="/signIn">already have account</Link>
+            <Link to="/signIn">do not have account?</Link>
           </div>
         </form>
       </div>

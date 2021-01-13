@@ -85,6 +85,10 @@ button {
   font-size: 0.9em;
   padding: 0.5em;
   margin: 0.2rem 0;
+  &-input {
+    border-color: rgb(219, 70, 53);
+  }
+
 }
 
 .message {
