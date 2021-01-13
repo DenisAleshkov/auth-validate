@@ -1,10 +1,15 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { signUp } from "./../../store/actions/auth.action";
+import {
+  signUp,
+  clearError,
+  clearMessage,
+} from "./../../store/actions/auth.action";
 import "./SignUp.scss";
 
 const SignUp = () => {
+
   const [validateError, setValidateError] = React.useState({});
   const [inputs, setInputs] = React.useState({
     email: "",
@@ -13,8 +18,16 @@ const SignUp = () => {
   });
 
   const registerError = useSelector((state) => state.AuthReducer.registerError);
-
+  const registerMessage = useSelector(
+    (state) => state.AuthReducer.registerMessage
+  );
+  
   const dispatch = useDispatch();
+
+  React.useEffect(() => {
+    dispatch(clearMessage());
+    setValidateError({ ...registerError });
+  }, [registerError]);
 
   const handleChange = (e) => {
     setInputs({ ...inputs, [e.target.name]: e.target.value });
@@ -23,13 +36,13 @@ const SignUp = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const errorField = isValidateField();
-    const noErrors =
-      Object.keys({ ...errorField, ...registerError }).length === 0;
+    const noErrors = Object.keys({ ...errorField }).length === 0;
     if (noErrors) {
-      setValidateError({});
+      dispatch(clearError());
       dispatch(signUp(inputs));
     } else {
-      setValidateError({ ...errorField, ...registerError });
+      dispatch(clearMessage());
+      setValidateError({ ...errorField });
     }
   };
 
@@ -127,6 +140,12 @@ const SignUp = () => {
       </span>
     ));
 
+  const showMessage = () => {
+    return (
+      registerMessage && <span className="message">{registerMessage}</span>
+    );
+  };
+
   return (
     <div className="wrapper">
       <div className="form-wrapper">
@@ -162,7 +181,10 @@ const SignUp = () => {
               noValidate
             />
           </div>
-          <div className="info">{showErrors()}</div>
+          <div className="info">
+            {showMessage()}
+            {showErrors()}
+          </div>
           <div className="submit">
             <button onClick={handleSubmit}>Create</button>
           </div>

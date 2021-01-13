@@ -1,10 +1,16 @@
-import { SIGNUP_SUCCESS, SIGNUP_ERROR } from "./../constants";
+import {
+  SIGNUP_SUCCESS,
+  SIGNUP_ERROR,
+  CLEAR_SIGNUP_ERROR,
+  CLEAR_SIGNUP_MESSAGE,
+} from "./../constants";
 
 const initialState = {
   email: "",
   password: "",
   confirmPassword: "",
-  registerError: ""
+  registerError: "",
+  registerMessage: "",
 };
 
 const AuthReducer = (state = initialState, action) => {
@@ -15,12 +21,25 @@ const AuthReducer = (state = initialState, action) => {
         email: action.payload.email,
         password: action.payload.password,
         confirmPassword: action.payload.confirmPassword,
+        registerMessage: action.payload.registerMessage,
       };
     }
     case SIGNUP_ERROR: {
       return {
         ...state,
         registerError: action.payload,
+      };
+    }
+    case CLEAR_SIGNUP_ERROR: {
+      return {
+        ...state,
+        registerError: "",
+      };
+    }
+    case CLEAR_SIGNUP_MESSAGE: {
+      return {
+        ...state,
+        registerMessage: "",
       };
     }
     default: {
