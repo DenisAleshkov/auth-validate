@@ -2,69 +2,58 @@ import React from "react";
 import firebase from "firebase";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { signUpSuccess } from "./../../store/actions/auth.action";
+import { signInSuccess } from "./../../../store/actions/auth.action";
 import {
-  VALIDATORS_PASSWORD,
   VALIDATORS_EMAIL,
   isValidateField,
-} from "./services/validate.service";
-import "./SignUp.scss";
+} from "./../services/validate.service";
+import "./../Auth.scss";
 
-const SignUp = () => {
+const SignIn = () => {
   const [validateError, setValidateError] = React.useState({
     errorEmail: [],
-    errorPassword: [],
-    errorRegister: [],
+    errorLogin: [],
   });
   const [inputs, setInputs] = React.useState({
     email: "",
     password: "",
-    confirmPassword: "",
   });
 
   const dispatch = useDispatch();
 
-  const signUp = (credentials) => {
-    const { email, password, confirmPassword } = credentials;
-    const db = firebase.firestore().collection("users");
+  const signIn = (credentials) => {
+    const { email, password } = credentials;
     firebase
       .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((res) => {
-        db.doc(res.user.uid).set({
-          email,
-          password,
-        });
+      .signInWithEmailAndPassword(email, password)
+      .then(async (res) => {
         dispatch(
-          signUpSuccess({
+          signInSuccess({
             isAuth: true,
             userId: res.user.uid,
             email,
             password,
-            confirmPassword,
           })
         );
       })
       .catch((error) => {
         setValidateError({
           errorEmail: [],
-          errorPassword: [],
-          errorRegister: [error.message],
+          errorLogin: [error.message],
         });
       });
   };
 
   const hasInputsValue = () => {
-    const { email, password, confirmPassword } = inputs;
-    return email === "" || password === "" || confirmPassword === "";
+    const { email, password } = inputs;
+    return email === "" || password === "";
   };
 
   React.useEffect(() => {
     return () => {
       setValidateError({
         errorEmail: [],
-        errorPassword: [],
-        errorRegister: [],
+        errorLogin: [],
       });
     };
   }, []);
@@ -75,31 +64,21 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errorFieldPassword = isValidateField(VALIDATORS_PASSWORD, inputs);
     const errorFieldEmail = isValidateField(VALIDATORS_EMAIL, inputs);
-    const isErrors = [...errorFieldEmail, ...errorFieldPassword].length;
+    const isErrors = [...errorFieldEmail].length;
     if (isErrors) {
       setValidateError({
         errorEmail: [...errorFieldEmail],
-        errorPassword: [...errorFieldPassword],
-        errorRegister: [],
+        errorLogin: [],
       });
     } else {
       setValidateError({
         errorEmail: [],
-        errorPassword: [],
-        errorRegister: [],
+        errorLogin: [],
       });
-      signUp(inputs);
+      signIn(inputs);
     }
   };
-
-  const renderPasswordErrors = () =>
-    validateError.errorPassword.map((item) => (
-      <span key={item} className="error">
-        {item}
-      </span>
-    ));
 
   const renderEmailErrors = () =>
     validateError.errorEmail.map((item) => (
@@ -108,8 +87,8 @@ const SignUp = () => {
       </span>
     ));
 
-  const renderRegisterErrors = () =>
-    validateError.errorRegister.map((item) => (
+  const renderLoginErrors = () =>
+    validateError.errorLogin.map((item) => (
       <span key={item} className="error">
         {item}
       </span>
@@ -119,7 +98,7 @@ const SignUp = () => {
     <div className="wrapper">
       <div className="wrapper-form">
         <div className="title">
-          <h2 className="title-text">Register</h2>
+          <h2 className="title-text">Login</h2>
         </div>
         <form className="sign-form" onSubmit={handleSubmit}>
           <div className="sign-form_group">
@@ -148,39 +127,15 @@ const SignUp = () => {
               type="password"
               name="password"
               id="password"
-              className={`${
-                validateError.errorPassword.length && "sign-form_input_error"
-              } 
-                  sign-form_input
-              `}
+              className="sign-form_input"
               onChange={handleChange}
               required
             />
             <label className="sign-form_label" htmlFor="password">
               Password
             </label>
-          </div>
-          <div className="sign-form_group">
-            <input
-              type="confirmPassword"
-              name="confirmPassword"
-              id="confirmPassword"
-              className={`${
-                validateError.errorPassword.length && "sign-form_input_error"
-              } 
-                  sign-form_input
-              `}
-              onChange={handleChange}
-              required
-            />
-            <label className="sign-form_label" htmlFor="confirmPassword">
-              Confirm Password
-            </label>
-            <div className={validateError.errorPassword.length && "info"}>
-              {renderPasswordErrors()}
-            </div>
-            <div className={validateError.errorRegister.length && "info"}>
-              {renderRegisterErrors()}
+            <div className={validateError.errorLogin.length && "info"}>
+              {renderLoginErrors()}
             </div>
           </div>
           <div className="sign-form_group">
@@ -189,12 +144,12 @@ const SignUp = () => {
               onClick={handleSubmit}
               disabled={hasInputsValue()}
             >
-              Register
+              Login
             </button>
           </div>
           <div className="sign-form_group">
-            <Link className="sign-form_link" to="/signIn">
-              Already have an accaunt?
+            <Link className="sign-form_link" to="/signUp">
+              Don`t have an accaunt?
             </Link>
           </div>
         </form>
@@ -203,4 +158,4 @@ const SignUp = () => {
   );
 };
 
-export default SignUp;
+export default SignIn;

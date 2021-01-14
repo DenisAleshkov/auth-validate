@@ -24,7 +24,6 @@ const AuthReducer = (state = initialState, action) => {
       };
     }
     case SIGNIN_SUCCESS: {
-      debugger
       return {
         ...state,
         isAuth: action.payload.isAuth,

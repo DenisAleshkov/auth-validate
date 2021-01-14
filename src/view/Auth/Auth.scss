@@ -85,6 +85,10 @@
     font-size: 20px;
     font-weight: 700;
     letter-spacing: 3px;
+    &:hover {
+      transition: 0.2s all;
+      background-color: #0968b7;
+    }
   }
 
   &_link {
