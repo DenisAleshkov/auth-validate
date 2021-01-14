@@ -1,38 +1,71 @@
 import React from "react";
-import { useSelector, useDispatch } from "react-redux";
+import firebase from "firebase";
+import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { signUpSuccess } from "./../../store/actions/auth.action";
 import {
-  signUp,
-  clearRegisterError,
-  clearRegisterMessage,
-} from "./../../store/actions/auth.action";
+  VALIDATORS_PASSWORD,
+  VALIDATORS_EMAIL,
+  isValidateField,
+} from "./services/validate.service";
 import "./SignUp.scss";
 
 const SignUp = () => {
-  const [validateError, setValidateError] = React.useState({});
+  const [validateError, setValidateError] = React.useState({
+    errorEmail: [],
+    errorPassword: [],
+    errorRegister: [],
+  });
   const [inputs, setInputs] = React.useState({
     email: "",
     password: "",
     confirmPassword: "",
   });
 
-  const registerError = useSelector((state) => state.AuthReducer.registerError);
-  const registerMessage = useSelector(
-    (state) => state.AuthReducer.registerMessage
-  );
-
   const dispatch = useDispatch();
 
-  React.useEffect(() => {
-    dispatch(clearRegisterMessage());
-    setValidateError(registerError);
-  }, [registerError]);
+  const signUp = (credentials) => {
+    const { email, password, confirmPassword } = credentials;
+    const db = firebase.firestore().collection("users");
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((res) => {
+        db.doc(res.user.uid).set({
+          email,
+          password,
+        });
+        dispatch(
+          signUpSuccess({
+            isAuth: true,
+            userId: res.user.uid,
+            email,
+            password,
+            confirmPassword,
+          })
+        );
+      })
+      .catch((error) => {
+        setValidateError({
+          errorEmail: [],
+          errorPassword: [],
+          errorRegister: [error.message],
+        });
+      });
+  };
+
+  const hasInputsValue = () => {
+    const { email, password, confirmPassword } = inputs;
+    return email === "" || password === "" || confirmPassword === "";
+  };
 
   React.useEffect(() => {
     return () => {
-      dispatch(clearRegisterMessage());
-      dispatch(clearRegisterError());
-      setValidateError({});
+      setValidateError({
+        errorEmail: [],
+        errorPassword: [],
+        errorRegister: [],
+      });
     };
   }, []);
 
@@ -42,195 +75,127 @@ const SignUp = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    const errorFieldPassword = isValidateField(VALIDATORS_PASSWORD);
-    const errorFieldEmail = isValidateField(VALIDATORS_EMAIL);
-    const noErrors =
-      Object.keys({
-        ...errorFieldPassword,
-        ...errorFieldEmail,
-      }).length === 0;
-    if (noErrors) {
-      dispatch(clearRegisterError());
-      setValidateError({});
-      dispatch(signUp(inputs));
-    } else {
-      dispatch(clearRegisterMessage());
+    const errorFieldPassword = isValidateField(VALIDATORS_PASSWORD, inputs);
+    const errorFieldEmail = isValidateField(VALIDATORS_EMAIL, inputs);
+    const isErrors = [...errorFieldEmail, ...errorFieldPassword].length;
+    if (isErrors) {
       setValidateError({
-        passwordError: errorFieldPassword,
-        emailError: errorFieldEmail,
+        errorEmail: [...errorFieldEmail],
+        errorPassword: [...errorFieldPassword],
+        errorRegister: [],
       });
+    } else {
+      setValidateError({
+        errorEmail: [],
+        errorPassword: [],
+        errorRegister: [],
+      });
+      signUp(inputs);
     }
   };
 
-  const isValidateField = (VALIDATORS) => {
-    const errors = {};
-    VALIDATORS.forEach((validator) => {
-      const error = validator.validate();
-      if (error !== undefined) {
-        const key = Object.keys(error);
-        const value = Object.values(error)[0];
-        errors[key] = value;
-      }
-    });
-    return errors;
-  };
+  const renderPasswordErrors = () =>
+    validateError.errorPassword.map((item) => (
+      <span key={item} className="error">
+        {item}
+      </span>
+    ));
 
-  const EmailExist = {
-    validate: function () {
-      if (!inputs.email) {
-        return {
-          emailError: "Check Email",
-        };
-      }
-    },
-  };
+  const renderEmailErrors = () =>
+    validateError.errorEmail.map((item) => (
+      <span key={item} className="error">
+        {item}
+      </span>
+    ));
 
-  const EmailValid = {
-    validate: function () {
-      if (!/^[A-Z0-9_.-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(inputs.email)) {
-        return {
-          emailValidError: "Invalid email address",
-        };
-      }
-    },
-  };
+  const renderRegisterErrors = () =>
+    validateError.errorRegister.map((item) => (
+      <span key={item} className="error">
+        {item}
+      </span>
+    ));
 
-  const PasswordLength = {
-    validate: function () {
-      if (!inputs.password || inputs.password.length < 8) {
-        return {
-          passwordError: "check password",
-        };
-      }
-    },
-  };
-
-  const PasswordOnDigit = {
-    isDigit: /[0-9]/,
-    validate: function () {
-      if (!inputs.password.match(this.isDigit)) {
-        return {
-          digitError: "password should contain one digit",
-        };
-      }
-    },
-  };
-
-  const PasswordOnLetter = {
-    isUppercase: /[A-Z]/,
-    validate: function () {
-      if (!inputs.password.match(this.isUppercase)) {
-        return {
-          letterError: "password should contain one uppercase letter",
-        };
-      }
-    },
-  };
-
-  const PasswordMatch = {
-    validate: function () {
-      if (
-        inputs.password.length &&
-        inputs.password !== inputs.confirmPassword
-      ) {
-        return {
-          matchError: "passwords do not match",
-        };
-      }
-    },
-  };
-
-  const VALIDATORS_PASSWORD = [
-    PasswordLength,
-    PasswordOnDigit,
-    PasswordOnLetter,
-    PasswordMatch,
-  ];
-
-  const VALIDATORS_EMAIL = [EmailExist, EmailValid];
-
-  const showPasswordErrors = () => {
-    if (validateError.passwordError) {
-      return Object.values(validateError.passwordError).map((item) => (
-        <span key={item} className="error">
-          {item}
-        </span>
-      ));
-    }
-  };
-  const showEmailErrors = () => {
-    if (validateError.emailError) {
-      return Object.values(validateError.emailError).map((item) => (
-        <span key={item} className="error">
-          {item}
-        </span>
-      ));
-    }
-  };
-  const showRegisterErrors = () => {
-    return (
-      validateError.registerError && (
-        <span className="error">{validateError.registerError}</span>
-      )
-    );
-  };
-  const showMessage = () => {
-    return (
-      registerMessage && <span className="message">{registerMessage}</span>
-    );
-  };
-  
   return (
     <div className="wrapper">
-      <div className="form-wrapper">
-        <h2>Register</h2>
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="email">
-            <label htmlFor="email">Email</label>
+      <div className="wrapper-form">
+        <div className="title">
+          <h2 className="title-text">Register</h2>
+        </div>
+        <form className="sign-form" onSubmit={handleSubmit}>
+          <div className="sign-form_group">
             <input
-              type="email"
+              type="text"
               name="email"
               id="email"
-              className={`${validateError.emailError && "error-input"}`}
+              className={`${
+                validateError.errorEmail.length && "sign-form_input_error"
+              } 
+                  sign-form_input
+              `}
               onChange={handleChange}
-              noValidate
+              required
             />
+            <label className="sign-form_label" htmlFor="email">
+              Email
+            </label>
+            <div className={validateError.errorEmail.length && "info"}>
+              {renderEmailErrors()}
+            </div>
           </div>
-          <div className="info">{showEmailErrors()}</div>
-          <div className="password">
-            <label htmlFor="password">Password</label>
+
+          <div className="sign-form_group">
             <input
               type="password"
               name="password"
               id="password"
-              className={`${validateError.passwordError && "error-input"}`}
+              className={`${
+                validateError.errorPassword.length && "sign-form_input_error"
+              } 
+                  sign-form_input
+              `}
               onChange={handleChange}
-              noValidate
+              required
             />
+            <label className="sign-form_label" htmlFor="password">
+              Password
+            </label>
           </div>
-          <div className="password">
-            <label htmlFor="password">Confirm Password</label>
+          <div className="sign-form_group">
             <input
               type="confirmPassword"
               name="confirmPassword"
               id="confirmPassword"
               className={`${
-                validateError.passwordError?.matchError && "error-input"
-              }`}
+                validateError.errorPassword.length && "sign-form_input_error"
+              } 
+                  sign-form_input
+              `}
               onChange={handleChange}
-              noValidate
+              required
             />
+            <label className="sign-form_label" htmlFor="confirmPassword">
+              Confirm Password
+            </label>
+            <div className={validateError.errorPassword.length && "info"}>
+              {renderPasswordErrors()}
+            </div>
+            <div className={validateError.errorRegister.length && "info"}>
+              {renderRegisterErrors()}
+            </div>
           </div>
-          <div className="info">
-            {showPasswordErrors()}
-            {showMessage()}
-            {showRegisterErrors()}
+          <div className="sign-form_group">
+            <button
+              className="sign-form_button"
+              onClick={handleSubmit}
+              disabled={hasInputsValue()}
+            >
+              Register
+            </button>
           </div>
-          <div className="submit">
-            <button onClick={handleSubmit}>Create</button>
-          </div>
-          <div>
-            <Link to="/signIn">do not have account?</Link>
+          <div className="sign-form_group">
+            <Link className="sign-form_link" to="/signIn">
+              Already have an accaunt?
+            </Link>
           </div>
         </form>
       </div>

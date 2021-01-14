@@ -1,7 +1,7 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
-import { signIn, clearAuthError } from "./../../store/actions/auth.action";
+import { signIn } from "./../../store/actions/auth.action";
 import "./SignIn.scss";
 
 const SignIn = () => {
@@ -21,7 +21,6 @@ const SignIn = () => {
 
   React.useEffect(() => {
     return () => {
-      dispatch(clearAuthError());
       setValidateError({});
     };
   }, []);
@@ -40,7 +39,6 @@ const SignIn = () => {
         ...errorFieldEmail,
       }).length === 0;
     if (noErrors) {
-      dispatch(clearAuthError());
       dispatch(signIn(inputs));
     } else {
       setValidateError({
@@ -122,42 +120,49 @@ const SignIn = () => {
       )
     );
   };
-  console.log(validateError)
+
   return (
     <div className="wrapper">
-      <div className="form-wrapper">
-        <h2>Login</h2>
-        <form onSubmit={handleSubmit} noValidate>
-          <div className="email">
-            <label htmlFor="email">Email</label>
+      <div className="wrapper-form">
+        <div className="title">
+          <h2 className="title-text">Login</h2>
+        </div>
+        <form className="sign-form" onSubmit={handleSubmit} >
+          <div className="sign-form_group">
             <input
-              type="email"
+              type="text"
               name="email"
               id="email"
-              className={`${validateError.emailError && "error-input"}`}
+              className="sign-form_input"
               onChange={handleChange}
-              noValidate
+              required
             />
+            <label className="sign-form_label" htmlFor="email">
+              Email
+            </label>
           </div>
-          <div className="info">{showEmailErrors()}</div>
-          <div className="password">
-            <label htmlFor="password">Password</label>
+          <div className="sign-form_group">
             <input
               type="password"
               name="password"
               id="password"
-              className={`${validateError.passwordError && "error-input"}`}
+              className="sign-form_input"
               onChange={handleChange}
-              noValidate
+              required
             />
+            <label className="sign-form_label" htmlFor="password">
+              Password
+            </label>
           </div>
-          <div className="info">{showPasswordErrors()}</div>
-          <div className="info">{showAuthErrors()}</div>
-          <div className="submit">
-            <button onClick={handleSubmit}>Create</button>
+          <div className="sign-form_group">
+            <button className="sign-form_button" onClick={handleSubmit}>
+              Login
+            </button>
           </div>
-          <div>
-            <Link to="/signUp">do not have account?</Link>
+          <div className="sign-form_group">
+            <Link className="sign-form_link" to="/signUp">
+              Don`t have an account?
+            </Link>
           </div>
         </form>
       </div>
