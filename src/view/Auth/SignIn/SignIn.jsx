@@ -1,8 +1,8 @@
-import React from "react";
-import firebase from "firebase";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { signInSuccess } from "./../../../store/actions/auth.action";
+import { signInFromFirebase } from "./../services/auth.service";
 import {
   VALIDATORS_EMAIL,
   isValidateField,
@@ -10,11 +10,11 @@ import {
 import "./../Auth.scss";
 
 const SignIn = () => {
-  const [validateError, setValidateError] = React.useState({
+  const [validateError, setValidateError] = useState({
     errorEmail: [],
     errorLogin: [],
   });
-  const [inputs, setInputs] = React.useState({
+  const [inputs, setInputs] = useState({
     email: "",
     password: "",
   });
@@ -23,10 +23,8 @@ const SignIn = () => {
 
   const signIn = (credentials) => {
     const { email, password } = credentials;
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then(async (res) => {
+    signInFromFirebase(credentials)
+      .then((res) => {
         dispatch(
           signInSuccess({
             isAuth: true,
@@ -49,7 +47,7 @@ const SignIn = () => {
     return email === "" || password === "";
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setValidateError({
         errorEmail: [],

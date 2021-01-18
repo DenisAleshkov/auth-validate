@@ -6,7 +6,6 @@ const EmailValid = {
   },
 };
 
-
 const PasswordOnDigit = {
   isDigit: /[0-9]/,
   validate: function (inputs) {

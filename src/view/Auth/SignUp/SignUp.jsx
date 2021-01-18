@@ -1,8 +1,8 @@
-import React from "react";
-import firebase from "firebase";
+import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
 import { signUpSuccess } from "./../../../store/actions/auth.action";
+import { signUpFromFirebase, setUser } from "./../services/auth.service";
 import {
   VALIDATORS_PASSWORD,
   VALIDATORS_EMAIL,
@@ -11,12 +11,12 @@ import {
 import "./../Auth.scss";
 
 const SignUp = () => {
-  const [validateError, setValidateError] = React.useState({
+  const [validateError, setValidateError] = useState({
     errorEmail: [],
     errorPassword: [],
     errorRegister: [],
   });
-  const [inputs, setInputs] = React.useState({
+  const [inputs, setInputs] = useState({
     email: "",
     password: "",
     confirmPassword: "",
@@ -26,12 +26,9 @@ const SignUp = () => {
 
   const signUp = (credentials) => {
     const { email, password, confirmPassword } = credentials;
-    const db = firebase.firestore().collection("users");
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
+    signUpFromFirebase(credentials)
       .then((res) => {
-        db.doc(res.user.uid).set({
+        setUser(res.user.uid, {
           email,
           password,
         });
@@ -59,7 +56,7 @@ const SignUp = () => {
     return email === "" || password === "" || confirmPassword === "";
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => {
       setValidateError({
         errorEmail: [],

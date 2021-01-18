@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import firebase from "firebase";
 import HomePage from "./view/HomePage/HomePage";
 import SignUp from "./view/Auth/SignUp/SignUp";
@@ -6,10 +6,10 @@ import SignIn from "./view/Auth/SignIn/SignIn";
 import { useSelector } from "react-redux";
 import { Switch, Route, Redirect } from "react-router-dom";
 import { FIREBASE_CONFIG } from "./store/constants";
-import "./App.css";
+import "./App.scss";
 
 const App = () => {
-  React.useEffect(() => {
+  useEffect(() => {
     if (!firebase.apps.length) {
       firebase.initializeApp(FIREBASE_CONFIG);
     }
