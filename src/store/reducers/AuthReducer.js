@@ -4,7 +4,7 @@ import {
 } from "./../constants";
 
 const initialState = {
-  isAuth: false,
+  isAuth: true,
   userId: "",
   email: "",
   password: "",

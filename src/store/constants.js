@@ -9,3 +9,6 @@ export const FIREBASE_CONFIG = {
 
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNIN_SUCCESS = "SIGNIN_SUCCESS";
+
+export const SET_TRAINING = "SET_TRAINING";
+export const GET_TRAINING = "GET_TRAINING";

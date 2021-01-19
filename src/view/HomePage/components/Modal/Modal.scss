@@ -1,0 +1,27 @@
+.modal {
+  position: fixed;
+  background: #eee;
+  opacity: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  top: 10%;
+  bottom: 10%;
+  left: 10%;
+  right: 10%;
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease;
+}
+
+.modal-show {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.6s ease;
+}
+
+.modal-hide {
+  opacity: 0;
+  transform: translateY(-200%);
+  transition: all 0.6s ease;
+}
