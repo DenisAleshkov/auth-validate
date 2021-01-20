@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import moment from "moment";
 import Record from "./components/Record/Record";
 import TrainingForm from "./components/TrainingForm/TrainingForm";
@@ -7,7 +7,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { addTraining } from "./../../../../store/actions/training.action";
 import "./Modal.scss";
 
-const Modal = (props) => {
+const Modal = ({ show, close, selected, trainerID }) => {
   const [validateError, setValidateError] = useState([]);
   const [form, setForm] = useState(false);
   const [inputs, setInputs] = useState({
@@ -22,7 +22,7 @@ const Modal = (props) => {
   const training = useSelector((state) => state.TrainingReducer.training);
   const email = useSelector((state) => state.AuthReducer.email);
 
-  const showModalClassName = props.show ? "modal-show" : "modal-hide";
+  const showModalClassName = show ? "modal-show" : "modal-hide";
   const showFormClassName = form ? "form-show" : "form-hide";
   const showBtnClassName = form ? "btn-hide" : "btn-show";
 
@@ -50,13 +50,13 @@ const Modal = (props) => {
       date: "",
       email: "",
     });
-  }, [props.show]);
+  }, [show]);
 
   const handleChange = (e) => {
     setInputs({
       ...inputs,
       [e.target.id]: e.target.value,
-      date: props.selected.toString(),
+      date: selected.toString(),
       email: email,
     });
   };
@@ -72,7 +72,7 @@ const Modal = (props) => {
       setValidateError(errors);
     } else {
       setValidateError([]);
-      dispatch(addTraining(props.trainerID, inputs));
+      dispatch(addTraining(trainerID, inputs));
     }
   };
 
@@ -93,7 +93,7 @@ const Modal = (props) => {
 
   const renderTraining = () => {
     const haveTraining = training.filter((item) =>
-      props.selected.isSame(item.date, "day")
+      selected.isSame(item.date, "day")
     );
     if (haveTraining.length) {
       return haveTraining.map((item, index) => (
@@ -128,9 +128,9 @@ const Modal = (props) => {
     <div className={`modal ${showModalClassName}`}>
       <div className="modal-container">
         <div className="modal-header">
-          <h2>{props.selected.format("MMMM Do YYYY")}</h2>
+          <h2>{selected.format("MMMM Do YYYY")}</h2>
           <div className="modal-close">
-            <button className="close-button" onClick={props.close}>
+            <button className="close-button" onClick={close}>
               &#10006;
             </button>
           </div>
