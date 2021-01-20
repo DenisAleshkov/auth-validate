@@ -77,6 +77,36 @@
     display: flex;
     flex-wrap: wrap;
   }
+  .day {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex: 1 1;
+    height: 35px;
+    border-left: solid 1px #cccccc;
+    cursor: pointer;
+    transition: all 0.2s;
+    &:hover {
+      background: #efefef;
+    }
+    &:first-child {
+      border-left: none;
+    }
+    &.different-month {
+      color: #c0c0c0;
+    }
+    &.disable-day {
+      color: #c0c0c0;
+    }
+    &.today {
+      background: #dceaf8;
+      color: #000;
+    }
+    &.selected-day {
+      background: #2875c7;
+      color: #ffffff;
+    }
+  }
 }
 
 .week-day {
@@ -86,80 +116,10 @@
 }
 
 .month-day {
-  cursor: pointer;
-  flex-basis: 14.286%;
-  text-align: center;
-  padding: 20px 0;
-  transition: 1s;
-  border-radius: 50%;
-}
-
-.day-number {
-  padding: 10%;
-  border-radius: 60%;
-  transition: 0.5s;
-  &:hover {
-    color: #fff;
-    background-color: salmon;
-  }
-}
-
-///
-.row {
   display: flex;
   width: 100%;
-}
-
-.calendar header .month-display {
-  align-items: center;
-  height: 40px;
-  background: #2875c7;
-}
-.calendar header .month-label {
-  text-align: center;
-  flex: 1;
-}
-.calendar .week {
   border-top: solid 1px #cccccc;
-}
-.calendar .week:first-child {
-  border-top: none;
-}
-.calendar .day-number {
-  color: #2875c7;
-  font-weight: bold;
-  cursor: default;
-  font-size: 1.2rem;
-}
-.calendar .day-number .day {
-  cursor: default;
-}
-.calendar .day-number .day:hover {
-  background: inherit;
-}
-.calendar .day {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex: 1 1;
-  height: 35px;
-  border-left: solid 1px #cccccc;
-  cursor: pointer;
-  transition: all 0.2s;
-}
-.calendar .day:hover {
-  background: #efefef;
-}
-.calendar .day:first-child {
-  border-left: none;
-}
-.calendar .day.today {
-  background: #dceaf8;
-}
-.calendar .day.different-month {
-  color: #c0c0c0;
-}
-.calendar .selected-day {
-  background: #2875c7;
-  color: #ffffff;
+  &:first-child {
+    border-top: none;
+  }
 }

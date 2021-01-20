@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
+import firebase from "firebase";
 import { getTrainersFromFirebase } from "./services/generate.service";
 import { getTraining } from "./../../store/actions/training.action";
+import { setUser } from "./../../store/actions/auth.action";
 import { useDispatch } from "react-redux";
 import Calendar from "./components/Calendar/Calendar";
 import "./HomePage.scss";
@@ -19,6 +21,24 @@ const HomePage = () => {
 
   useEffect(() => {
     getTrainers();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+      if (user) {
+        firebase
+          .firestore()
+          .collection("users")
+          .doc(user.uid)
+          .get()
+          .then((doc) => {
+            dispatch(setUser({...doc.data(), userId: user.uid, isAuth: true}))
+          });
+      }
+    });
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

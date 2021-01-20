@@ -1,6 +1,7 @@
 import {
   SIGNUP_SUCCESS,
   SIGNIN_SUCCESS,
+  SET_USER
 } from "./../constants";
 
 const initialState = {
@@ -24,6 +25,15 @@ const AuthReducer = (state = initialState, action) => {
       };
     }
     case SIGNIN_SUCCESS: {
+      return {
+        ...state,
+        isAuth: action.payload.isAuth,
+        userId: action.payload.userId,
+        email: action.payload.email,
+        password: action.payload.password,
+      };
+    }
+    case SET_USER: {
       return {
         ...state,
         isAuth: action.payload.isAuth,

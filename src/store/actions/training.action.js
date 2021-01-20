@@ -10,8 +10,8 @@ export const addTraining = (id, data) => (dispatch) => {
     .collection("trainers")
     .doc(id)
     .collection("training");
-  db.add(data).then(() => {
-    dispatch(setTraining({ id: id, ...data }));
+  db.add(data).then((res) => {
+    dispatch(setTraining({ id: res.id, ...data }));
   });
 };
 
