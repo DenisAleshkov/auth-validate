@@ -1,10 +1,7 @@
 import React from "react";
 
-const Day = ({
-  day,
-  day: { date, isCurrentMonth, isToday, number, isBusy },
-  select,
-}) => {
+const Day = ({ day, select }) => {
+  const { date, isCurrentMonth, isToday, number, isBusy } = day;
   const isDisable = date.isBefore(new Date(), "day");
   return (
     <span

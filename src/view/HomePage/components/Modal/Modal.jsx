@@ -1,94 +1,41 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import moment from "moment";
 import Record from "./components/Record/Record";
-import TrainingForm from "./components/TrainingForm/TrainingForm";
-import { VALIDATORS_TIME, isValidateField } from "./services/validate.service";
-import { useDispatch, useSelector } from "react-redux";
-import { addTraining } from "./../../../../store/actions/training.action";
+import TimeForm from "./components/TimeForm/TimeForm";
+import { useSelector } from "react-redux";
 import "./Modal.scss";
 
 const Modal = ({ show, close, selected, trainerID }) => {
-  const [validateError, setValidateError] = useState([]);
+  
   const [form, setForm] = useState(false);
-  const [inputs, setInputs] = useState({
-    from: "",
-    to: "",
-    date: "",
-    email: "",
-  });
-
-  const dispatch = useDispatch();
-
+  
   const training = useSelector((state) => state.TrainingReducer.training);
-  const email = useSelector((state) => state.AuthReducer.email);
-
+  
   const showModalClassName = show ? "modal-show" : "modal-hide";
   const showFormClassName = form ? "form-show" : "form-hide";
   const showBtnClassName = form ? "btn-hide" : "btn-show";
 
-  const hasInputTime = () => {
-    const { from, to } = inputs;
-    return from === "" || to === "";
-  };
-
   const renderForm = () =>
     form && (
-      <TrainingForm
+      <TimeForm
+        selected={selected}
         showFormClassName={showFormClassName}
-        handleChange={handleChange}
-        handleSubmit={handleSubmit}
-        hasInputTime={hasInputTime}
         closeForm={closeForm}
+        form={form}
+        trainerID={trainerID}
       />
     );
 
   useEffect(() => {
     setForm(false);
-    setInputs({
-      from: "",
-      to: "",
-      date: "",
-      email: "",
-    });
   }, [show]);
-
-  const handleChange = (e) => {
-    setInputs({
-      ...inputs,
-      [e.target.id]: e.target.value,
-      date: selected.toString(),
-      email: email,
-    });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const errors = isValidateField(VALIDATORS_TIME, {
-      from: inputs.from,
-      to: inputs.to,
-    });
-    const isError = [...errors].length;
-    if (isError) {
-      setValidateError(errors);
-    } else {
-      setValidateError([]);
-      dispatch(addTraining(trainerID, inputs));
-    }
-  };
-
+  
   const showForm = () => {
     setForm(true);
   };
 
   const closeForm = () => {
     setForm(false);
-    setInputs({
-      from: "",
-      to: "",
-      date: "",
-      email: "",
-    });
-    setValidateError([]);
   };
 
   const renderTraining = () => {
@@ -115,14 +62,9 @@ const Modal = ({ show, close, selected, trainerID }) => {
       ));
     }
     return <div className="empty-record">No record</div>;
-  };
+  }
 
-  const renderError = () =>
-    validateError.map((item) => (
-      <span key={item} className="error">
-        {item}
-      </span>
-    ));
+ 
 
   return (
     <div className={`modal ${showModalClassName}`}>
@@ -137,7 +79,7 @@ const Modal = ({ show, close, selected, trainerID }) => {
         </div>
         <div className="modal-body">
           <div className="content">
-            <div class="record">{renderTraining()}</div>
+            <div class="record">{show && renderTraining()}</div>
           </div>
         </div>
         <div className="modal-action">
@@ -152,7 +94,6 @@ const Modal = ({ show, close, selected, trainerID }) => {
               +
             </button>
           </div>
-          <div className={validateError.length && "info"}>{renderError()}</div>
         </div>
       </div>
     </div>

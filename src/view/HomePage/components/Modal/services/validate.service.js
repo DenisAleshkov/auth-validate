@@ -14,13 +14,13 @@ const TimeValid = {
   },
 };
 
-const isTimeValid = {
+const ValidateFieldTime = {
   isValidate: function (inputs) {
-    return TimeValid.validate(inputs);
+    return Boolean(TimeValid.validate(inputs));
   },
 };
 
-const Work = {
+const WorkTime = {
   isWorkUntil: function (value) {
     if ((value <= WORK_AT && value >= NIGHT_TIME) || value > WORK_UNTIL) {
       return true;
@@ -44,10 +44,10 @@ const fromHoursToNumber = (time) => {
 
 const TimeOnWork = {
   validate: function (inputs) {
-    const isWorkUntil = Work.isWorkUntil(fromHoursToNumber(inputs.to));
-    const isWorkAt = Work.isWorkAt(fromHoursToNumber(inputs.from));
+    const isWorkUntil = WorkTime.isWorkUntil(fromHoursToNumber(inputs.to));
+    const isWorkAt = WorkTime.isWorkAt(fromHoursToNumber(inputs.from));
     const workSucces = [isWorkUntil, isWorkAt].every((item) => item === false);
-    if (!isTimeValid.isValidate(inputs) && !workSucces) {
+    if (!ValidateFieldTime.isValidate(inputs) && !workSucces) {
       return "We don`t work in this time";
     }
   },

@@ -9,6 +9,8 @@ export const FIREBASE_CONFIG = {
 
 export const SIGNUP_SUCCESS = "SIGNUP_SUCCESS";
 export const SIGNIN_SUCCESS = "SIGNIN_SUCCESS";
+export const SIGNOUT_SUCCESS = "SIGNOUT_SUCCESS";
+export const SIGNOUT_ERROR = "SIGNOUT_ERROR";
 export const SET_USER = "SET_USER";
 
 export const SET_TRAINING = "SET_TRAINING";

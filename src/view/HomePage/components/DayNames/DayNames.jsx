@@ -1,17 +1,17 @@
 import React from "react";
 
-const DayNames = () => {
+const DayNames = React.memo(() => {
   return (
-    <div className="calendar-week week">
-      <div className="week-day">SUN</div>
-      <div className="week-day">Mon</div>
-      <div className="week-day">TUE</div>
-      <div className="week-day">WED</div>
-      <div className="week-day">THU</div>
-      <div className="week-day">FRI</div>
-      <div className="week-day">SAT</div>
+    <div className="calendar-daynames daynames">
+      <div className="daynames-item">SUN</div>
+      <div className="daynames-item">Mon</div>
+      <div className="daynames-item">TUE</div>
+      <div className="daynames-item">WED</div>
+      <div className="daynames-item">THU</div>
+      <div className="daynames-item">FRI</div>
+      <div className="daynames-item">SAT</div>
     </div>
   );
-};
+});
 
 export default DayNames;

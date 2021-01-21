@@ -8,12 +8,22 @@ import { Switch, Route, Redirect } from "react-router-dom";
 import { FIREBASE_CONFIG } from "./store/constants";
 import "./App.scss";
 
-firebase.initializeApp(FIREBASE_CONFIG);
+if (!firebase.apps.length) {
+  firebase.initializeApp(FIREBASE_CONFIG);
+}
 
 const App = () => {
+  const isAuth = useSelector((state) => state.AuthReducer.isAuth);
   return (
     <div className="App">
       <Switch>
+        <Route
+          path="/"
+          exact
+          render={() => {
+            return isAuth ? <Redirect to="/home" /> : <Redirect to="/signIn" />;
+          }}
+        />
         <Route path="/signIn" exact>
           <SignIn />
         </Route>

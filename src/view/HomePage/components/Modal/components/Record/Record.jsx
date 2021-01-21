@@ -12,6 +12,6 @@ const Record = ({ index, email, from ,to }) => {
       </div>
     </div>
   );
-};
+}
 
 export default Record;

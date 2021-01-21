@@ -11,6 +11,9 @@
     min-height: 50px;
     box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14),
       0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    @media screen and (max-width: 500px) {
+      padding: 10px 20px;
+    }
   }
   &-user {
     display: flex;
@@ -32,6 +35,25 @@
       flex-direction: column;
       align-items: stretch;
       padding: 0;
+    }
+  }
+  &-logout {
+    margin-right: 20px;
+    &_btn {
+      font-size: 14px;
+      color: #3c4043;
+      border: 1px solid #dadce0;
+      background-color: #fff;
+      cursor: pointer;
+      padding: 10px 24px;
+      transition: 0.3s;
+      &:hover {
+        background-color: #eaeaf0;
+      }
+      &:focus {
+        background-color: #eaeaf0;
+        box-shadow: 0 1px 3px 0 rgba(60, 64, 67, 0.302), 0 4px 8px 3px rgba(60, 64, 67, 0.149);
+      }
     }
   }
 }
@@ -95,9 +117,22 @@
 
   &-week {
     display: flex;
+    width: 100%;
+    border-top: solid 1px #cccccc;
+    &:first-child {
+      border-top: none;
+    }
+  }
+  &-daynames {
+    display: flex;
     color: #fff;
     background-color: #404040;
     padding: 20px 0;
+    .daynames-item {
+      text-transform: uppercase;
+      flex: 1 1;
+      text-align: center;
+    }
   }
   &-month {
     padding: 20px 0;
@@ -122,9 +157,6 @@
     &.different-month {
       color: #c0c0c0;
     }
-    &.disable-day {
-      color: #c0c0c0;
-    }
     &.today {
       background: #dceaf8;
       color: #000;
@@ -133,20 +165,9 @@
       background: #2875c7;
       color: #ffffff;
     }
-  }
-}
-
-.week-day {
-  text-transform: uppercase;
-  flex: 1 1;
-  text-align: center;
-}
-
-.month-day {
-  display: flex;
-  width: 100%;
-  border-top: solid 1px #cccccc;
-  &:first-child {
-    border-top: none;
+    &.disable-day {
+      color: #c0c0c0;
+      background-color: #fff;
+    }
   }
 }

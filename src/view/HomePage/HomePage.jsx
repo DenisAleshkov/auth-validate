@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import firebase from "firebase";
+import Calendar from "./components/Calendar/Calendar";
 import { getTrainersFromFirebase } from "./services/generate.service";
 import { getTraining } from "./../../store/actions/training.action";
-import { setUser } from "./../../store/actions/auth.action";
-import { useDispatch } from "react-redux";
-import Calendar from "./components/Calendar/Calendar";
+import { setUser, signOut } from "./../../store/actions/auth.action";
+import { useSelector, useDispatch } from "react-redux";
+import { useHistory } from "react-router-dom";
 import "./HomePage.scss";
 
 const HomePage = () => {
@@ -12,6 +13,7 @@ const HomePage = () => {
   const [trainerID, setTrainerID] = useState("");
 
   const dispatch = useDispatch();
+  const history = useHistory();
 
   const getTrainers = async () => {
     const getter = await getTrainersFromFirebase();
@@ -32,13 +34,15 @@ const HomePage = () => {
           .doc(user.uid)
           .get()
           .then((doc) => {
-            dispatch(setUser({...doc.data(), userId: user.uid, isAuth: true}))
+            dispatch(
+              setUser({ ...doc.data(), userId: user.uid, isAuth: true })
+            );
           });
+      } else {
+        unsubscribe();
+        history.push("/signIn");
       }
     });
-    return () => {
-      unsubscribe();
-    };
   }, []);
 
   useEffect(() => {
@@ -47,7 +51,11 @@ const HomePage = () => {
     }
   }, [trainerID]);
 
-  const chooseTrainer = (e) => {
+  const signOutHandler = () => {
+    dispatch(signOut(history));
+  };
+
+  const choseTrainer = (e) => {
     setTrainerID(e.target.id);
   };
 
@@ -57,7 +65,7 @@ const HomePage = () => {
         {trainers.map((item) => {
           return (
             <button
-              onClick={chooseTrainer}
+              onClick={choseTrainer}
               className={`sidebar-btn ${
                 item.id === trainerID ? "sidebar-btn-selected" : ""
               } coach`}
@@ -71,11 +79,17 @@ const HomePage = () => {
       </ul>
     );
   };
+
   return (
     <div className="menu">
       <header className="menu-header">
+        <div className="menu-logout">
+          <button className="menu-logout_btn" onClick={signOutHandler}>
+            Sign Out
+          </button>
+        </div>
         <div className="menu-user">
-          <span className="menu-avatar">User</span>
+          <span className="menu-avatar">user</span>
         </div>
       </header>
       <div className="menu-content">
