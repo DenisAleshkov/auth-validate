@@ -6,7 +6,6 @@ import DayNames from "../DayNames/DayNames";
 import { useSelector } from "react-redux";
 
 const Calendar = ({ trainerID }) => {
-
   const [month, setMonth] = useState(moment());
   const [selected, setSelected] = useState(moment().startOf("day"));
   const [show, setShow] = useState(false);
@@ -14,13 +13,13 @@ const Calendar = ({ trainerID }) => {
   const training = useSelector((state) => state.TrainingReducer.training);
 
   const select = (day) => {
-    setShow(!show);
+    setShow(true);
     setSelected(day.date);
   };
 
   const close = () => {
     setMonth(moment());
-    setShow(!show);
+    setShow(false);
   };
 
   const getWeeks = () => {

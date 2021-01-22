@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import Record from "./components/Record/Record";
 import TimeForm from "./components/TimeForm/TimeForm";
@@ -6,14 +6,20 @@ import { useSelector } from "react-redux";
 import "./Modal.scss";
 
 const Modal = ({ show, close, selected, trainerID }) => {
-  
   const [form, setForm] = useState(false);
-  
+  const inside = useRef();
+
   const training = useSelector((state) => state.TrainingReducer.training);
-  
+
   const showModalClassName = show ? "modal-show" : "modal-hide";
   const showFormClassName = form ? "form-show" : "form-hide";
   const showBtnClassName = form ? "btn-hide" : "btn-show";
+
+  const handleClickOnOutside = (e) => {
+    if (!inside.current.contains(e.target)) {
+      close();
+    }
+  };
 
   const renderForm = () =>
     form && (
@@ -29,7 +35,7 @@ const Modal = ({ show, close, selected, trainerID }) => {
   useEffect(() => {
     setForm(false);
   }, [show]);
-  
+
   const showForm = () => {
     setForm(true);
   };
@@ -62,13 +68,14 @@ const Modal = ({ show, close, selected, trainerID }) => {
       ));
     }
     return <div className="empty-record">No record</div>;
-  }
-
- 
+  };
 
   return (
-    <div className={`modal ${showModalClassName}`}>
-      <div className="modal-container">
+    <div
+      className={`modal ${showModalClassName}`}
+      onClick={handleClickOnOutside}
+    >
+      <div ref={inside} className="modal-container">
         <div className="modal-header">
           <h2>{selected.format("MMMM Do YYYY")}</h2>
           <div className="modal-close">

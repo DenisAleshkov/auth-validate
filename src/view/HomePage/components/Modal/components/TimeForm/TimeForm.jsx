@@ -20,7 +20,6 @@ const TimeForm = ({ closeForm, form, selected, trainerID }) => {
 
   const email = useSelector((state) => state.AuthReducer.email);
 
-  
   useEffect(() => {
     setInputs({
       from: "",
@@ -111,7 +110,9 @@ const TimeForm = ({ closeForm, form, selected, trainerID }) => {
             </button>
           </div>
         </div>
-        <div className={validateError.length && "info info-time-error"}>{renderError()}</div>
+        <div className={validateError.length && "info info-time-error"}>
+          {renderError()}
+        </div>
       </form>
     </div>
   );
