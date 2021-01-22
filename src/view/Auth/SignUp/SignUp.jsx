@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { signUpSuccess } from "./../../../store/actions/auth.action";
 import { signUpFromFirebase, setUser } from "./../services/auth.service";
 import {
@@ -22,6 +22,7 @@ const SignUp = () => {
     confirmPassword: "",
   });
 
+  const history = useHistory();
   const dispatch = useDispatch();
 
   const signUp = (credentials) => {
@@ -41,6 +42,7 @@ const SignUp = () => {
             confirmPassword,
           })
         );
+        history.push("/home");
       })
       .catch((error) => {
         setValidateError({

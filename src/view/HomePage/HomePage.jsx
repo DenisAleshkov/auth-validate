@@ -4,7 +4,7 @@ import Calendar from "./components/Calendar/Calendar";
 import { getTrainersFromFirebase } from "./services/generate.service";
 import { getTraining } from "./../../store/actions/training.action";
 import { setUser, signOut } from "./../../store/actions/auth.action";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./HomePage.scss";
 
@@ -38,11 +38,13 @@ const HomePage = () => {
               setUser({ ...doc.data(), userId: user.uid, isAuth: true })
             );
           });
-      } else {
+      }
+      else {
         unsubscribe();
-        history.push("/signIn");
+        history.push("/signIn")
       }
     });
+     
   }, []);
 
   useEffect(() => {

@@ -6,7 +6,6 @@ import {
   VALIDATORS_TIME,
 } from "./../../services/validate.service";
 const TimeForm = ({ closeForm, form, selected, trainerID }) => {
-  console.log("TimeForm");
   const [validateError, setValidateError] = useState([]);
   const [inputs, setInputs] = useState({
     from: "",
