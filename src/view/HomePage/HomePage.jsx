@@ -4,7 +4,7 @@ import Calendar from "./components/Calendar/Calendar";
 import { getTrainersFromFirebase } from "./services/generate.service";
 import { getTraining } from "./../../store/actions/training.action";
 import { setUser, signOut } from "./../../store/actions/auth.action";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
 import "./HomePage.scss";
 
@@ -14,6 +14,8 @@ const HomePage = () => {
 
   const dispatch = useDispatch();
   const history = useHistory();
+
+  const email = useSelector((state) => state.AuthReducer.email);
 
   const getTrainers = async () => {
     const getter = await getTrainersFromFirebase();
@@ -38,13 +40,12 @@ const HomePage = () => {
               setUser({ ...doc.data(), userId: user.uid, isAuth: true })
             );
           });
-      }
-      else {
+      } else {
         unsubscribe();
-        history.push("/signIn")
+        history.push("/signIn");
       }
     });
-     
+    return () => unsubscribe();
   }, []);
 
   useEffect(() => {
@@ -85,13 +86,13 @@ const HomePage = () => {
   return (
     <div className="menu">
       <header className="menu-header">
+        <div className="menu-user">
+          <span className="menu-avatar">{email}</span>
+        </div>
         <div className="menu-logout">
           <button className="menu-logout_btn" onClick={signOutHandler}>
             Sign Out
           </button>
-        </div>
-        <div className="menu-user">
-          <span className="menu-avatar">user</span>
         </div>
       </header>
       <div className="menu-content">

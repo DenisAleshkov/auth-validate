@@ -22,7 +22,7 @@ const Calendar = ({ trainerID }) => {
     setShow(false);
   };
 
-  const getWeeks = () => {
+  const week = useMemo(() => {
     const weeks = [];
     let done = false;
     const date = month
@@ -48,9 +48,7 @@ const Calendar = ({ trainerID }) => {
       monthIndex = date.month();
     }
     return weeks;
-  };
-
-  const week = useMemo(() => getWeeks(), [trainerID, training]);
+  }, [trainerID, training]);
 
   return (
     <div className="calendar">

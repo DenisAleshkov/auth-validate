@@ -86,7 +86,7 @@ const Modal = ({ show, close, selected, trainerID }) => {
         </div>
         <div className="modal-body">
           <div className="content">
-            <div class="record">{show && renderTraining()}</div>
+            <div className="record">{show && renderTraining()}</div>
           </div>
         </div>
         <div className="modal-action">
