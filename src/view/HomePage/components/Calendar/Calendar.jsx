@@ -12,9 +12,9 @@ const Calendar = ({ trainerID }) => {
 
   const training = useSelector((state) => state.TrainingReducer.training);
 
-  const select = (day) => {
+  const select = (date) => {
     setShow(true);
-    setSelected(day.date);
+    setSelected(date);
   };
 
   const close = () => {
@@ -39,7 +39,6 @@ const Calendar = ({ trainerID }) => {
           date={date.clone()}
           month={month}
           select={select}
-          selected={selected}
           training={training}
         />
       );
@@ -48,7 +47,7 @@ const Calendar = ({ trainerID }) => {
       monthIndex = date.month();
     }
     return weeks;
-  }, [trainerID, training]);
+  }, [training]);
 
   return (
     <div className="calendar">

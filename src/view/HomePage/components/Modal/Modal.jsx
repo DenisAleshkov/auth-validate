@@ -1,4 +1,8 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, {
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import moment from "moment";
 import Record from "./components/Record/Record";
 import TimeForm from "./components/TimeForm/TimeForm";
@@ -36,20 +40,16 @@ const Modal = ({ show, close, selected, trainerID }) => {
     setForm(false);
   }, [show]);
 
-  const showForm = () => {
-    setForm(true);
-  };
+  const showForm = () => setForm(true);
 
-  const closeForm = () => {
-    setForm(false);
-  };
+  const closeForm = () => setForm(false);
 
   const renderTraining = () => {
-    const haveTraining = training.filter((item) =>
+    const trainingInSelectedDay = training.filter((item) =>
       selected.isSame(item.date, "day")
     );
-    if (haveTraining.length) {
-      return haveTraining.map((item, index) => (
+    if (trainingInSelectedDay.length) {
+      return trainingInSelectedDay.map((item, index) => (
         <Record
           key={item.id}
           index={index}

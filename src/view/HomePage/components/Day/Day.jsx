@@ -1,11 +1,16 @@
 import React from "react";
 
-const Day = ({ day, select }) => {
-  const { date, isCurrentMonth, isToday, number, isBusy } = day;
-  const isDisable = date.isBefore(new Date(), "day");
+const Day = ({
+  select,
+  number,
+  isCurrentMonth,
+  isToday,
+  isBusy,
+  isDisable,
+  date,
+}) => {
   return (
     <span
-      key={date.toString()}
       className={
         "day" +
         (isToday ? " today" : "") +
@@ -15,7 +20,7 @@ const Day = ({ day, select }) => {
       }
       onClick={() => {
         if (!isDisable || isToday) {
-          select(day);
+          select(date);
         }
       }}
     >
