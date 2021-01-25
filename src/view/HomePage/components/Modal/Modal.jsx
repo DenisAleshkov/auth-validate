@@ -1,8 +1,4 @@
-import React, {
-  useEffect,
-  useRef,
-  useState,
-} from "react";
+import React, { useEffect, useRef, useState } from "react";
 import moment from "moment";
 import Record from "./components/Record/Record";
 import TimeForm from "./components/TimeForm/TimeForm";

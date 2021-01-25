@@ -4,6 +4,7 @@ import Modal from "./../Modal/Modal";
 import moment from "moment";
 import DayNames from "../DayNames/DayNames";
 import { useSelector } from "react-redux";
+import MonthLabel from "../MonthLabel/MonthLabel";
 
 const Calendar = ({ trainerID }) => {
   const [month, setMonth] = useState(moment());
@@ -12,17 +13,29 @@ const Calendar = ({ trainerID }) => {
 
   const training = useSelector((state) => state.TrainingReducer.training);
 
+  const nextMonth = () => {
+    setMonth(month.clone().add(1, "month"));
+  };
+
+  const prevMonth = () => {
+    const prevMonth = month.clone().subtract(1, "month");
+    const disableMonth = selected.clone().subtract(1, "month");
+    if (!disableMonth.isSame(prevMonth, "month")) {
+      setMonth(month.clone().subtract(1, "month"));
+    }
+  };
+
   const select = (date) => {
     setShow(true);
     setSelected(date);
   };
 
   const close = () => {
-    setMonth(moment());
     setShow(false);
+    setSelected(moment().startOf("day"));
   };
 
-  const week = useMemo(() => {
+  const renderWeek = useMemo(() => {
     const weeks = [];
     let done = false;
     const date = month
@@ -47,7 +60,13 @@ const Calendar = ({ trainerID }) => {
       monthIndex = date.month();
     }
     return weeks;
-  }, [training]);
+  }, [training, month]);
+
+  const renderMonthLabel = useMemo(() => {
+    return (
+      <MonthLabel month={month} nextMonth={nextMonth} prevMonth={prevMonth} />
+    );
+  }, [month]);
 
   return (
     <div className="calendar">
@@ -59,8 +78,9 @@ const Calendar = ({ trainerID }) => {
       >
         {selected.toString()}
       </Modal>
+      {renderMonthLabel}
       <DayNames />
-      {week}
+      {renderWeek}
     </div>
   );
 };

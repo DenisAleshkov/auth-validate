@@ -41,7 +41,6 @@ const HomePage = () => {
             );
           });
       } else {
-        unsubscribe();
         history.push("/signIn");
       }
     });
