@@ -13,7 +13,7 @@
   transform: translateY(0);
   transition: all 0.6s ease;
   &-container {
-    min-width: 320px;
+    min-width: 280px;
     width: 600px;
     max-width: 800px;
     background-color: #fff;
@@ -41,6 +41,23 @@
     padding: 25px 0 30px;
     border-top: 2px solid #e5e9e7;
   }
+  &-form {
+    opacity: 1;
+    transition: all 1s ease;
+    height: 5px;
+  }
+  &-btn_show_form {
+    cursor: pointer;
+    border: none;
+    color: #fff;
+    background-color: #f44336;
+    width: 50px;
+    height: 50px;
+    font-size: 25px;
+    border-radius: 50%;
+    box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
+    transition: all 0.5s ease;
+  }
 }
 
 .close-button {
@@ -53,19 +70,6 @@
   }
 }
 
-.add-button {
-  cursor: pointer;
-  border: none;
-  color: #fff;
-  background-color: #f44336;
-  width: 50px;
-  height: 50px;
-  font-size: 25px;
-  border-radius: 50%;
-  box-shadow: 0 0 2px rgba(0, 0, 0, 0.12), 0 2px 2px rgba(0, 0, 0, 0.2);
-  transition: all 0.5s ease;
-}
-
 .modal-show {
   opacity: 1;
   transform: translateY(0);
@@ -74,12 +78,6 @@
 .modal-hide {
   opacity: 0;
   transform: translateY(-200%);
-}
-
-.actions-group_create_form {
-  opacity: 1;
-  transition: all 1s ease;
-  height: 5px;
 }
 
 .form-show {
@@ -104,6 +102,9 @@
   max-height: 150px;
   overflow-y: auto;
   overflow-x: hidden;
+  @media screen and (max-width: 320px) {
+    font-size: 10px;
+  }
   &-item {
     display: flex;
     justify-content: center;

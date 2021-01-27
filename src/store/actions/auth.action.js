@@ -1,4 +1,3 @@
-import firebase from "firebase";
 import {
   SIGNUP_SUCCESS,
   SIGNIN_SUCCESS,
@@ -6,6 +5,7 @@ import {
   SIGNOUT_ERROR,
   SET_USER,
 } from "./../constants";
+import { signOutFromFirebase } from "./../services/firebase.service";
 
 export const setUser = (payload) => ({ type: SET_USER, payload });
 export const signUpSuccess = (payload) => ({ type: SIGNUP_SUCCESS, payload });
@@ -14,12 +14,10 @@ export const signOutSuccess = (payload) => ({ type: SIGNOUT_SUCCESS, payload });
 export const signOutError = (payload) => ({ type: SIGNOUT_ERROR, payload });
 
 export const signOut = (history) => (dispatch) => {
-  firebase
-    .auth()
-    .signOut()
+  signOutFromFirebase()
     .then(() => {
       dispatch(signOutSuccess({ isAuth: false }));
-      history.push("/signIn")
+      history.push("/signIn");
     })
     .catch((error) => {
       dispatch(signOutError(error.response));

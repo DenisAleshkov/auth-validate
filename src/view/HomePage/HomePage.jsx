@@ -1,11 +1,14 @@
 import React, { useEffect, useState } from "react";
-import firebase from "firebase";
 import Calendar from "./components/Calendar/Calendar";
 import { getTrainersFromFirebase } from "./services/generate.service";
 import { getTraining } from "./../../store/actions/training.action";
 import { setUser, signOut } from "./../../store/actions/auth.action";
 import { useDispatch, useSelector } from "react-redux";
 import { useHistory } from "react-router-dom";
+import {
+  getCurrentUserFromFirebase,
+  getUserInfo,
+} from "./services/firebase.service";
 import "./HomePage.scss";
 
 const HomePage = () => {
@@ -17,10 +20,13 @@ const HomePage = () => {
 
   const email = useSelector((state) => state.AuthReducer.email);
 
-  const getTrainers = async () => {
-    const getter = await getTrainersFromFirebase();
-    setTrainers(getter);
-    setTrainerID(getter[0].id);
+  const getTrainers = () => {
+    getTrainersFromFirebase()
+      .then((trainers) => {
+        setTrainers(trainers);
+        setTrainerID(trainers[0].id);
+      })
+      .catch(() => {});
   };
 
   useEffect(() => {
@@ -28,23 +34,20 @@ const HomePage = () => {
   }, []);
 
   useEffect(() => {
-    const unsubscribe = firebase.auth().onAuthStateChanged((user) => {
+    const unsubscribe = getCurrentUserFromFirebase((user) => {
       if (user) {
-        firebase
-          .firestore()
-          .collection("users")
-          .doc(user.uid)
-          .get()
-          .then((doc) => {
-            dispatch(
-              setUser({ ...doc.data(), userId: user.uid, isAuth: true })
-            );
-          });
+        getUserInfo(user.uid).then((result) => {
+          dispatch(
+            setUser({ ...result.data(), userId: user.uid, isAuth: true })
+          );
+        });
       } else {
         history.push("/signIn");
       }
     });
-    return () => unsubscribe();
+    return () => {
+      unsubscribe();
+    };
   }, []);
 
   useEffect(() => {

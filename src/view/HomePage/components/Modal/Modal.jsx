@@ -81,17 +81,17 @@ const Modal = ({ show, close, selected, trainerID }) => {
           </div>
         </div>
         <div className="modal-body">
-          <div className="content">
-            <div className="record">{show && renderTraining()}</div>
+          <div className="modal-content">
+            <div className="modal-record record">{show && renderTraining()}</div>
           </div>
         </div>
         <div className="modal-action">
-          <div className={`${showFormClassName} actions-group_create_form`}>
+          <div className={`${showFormClassName} modal-form`}>
             {renderForm()}
           </div>
-          <div className={`${showBtnClassName} actions-group`}>
+          <div className={`${showBtnClassName} modal-btn`}>
             <button
-              className={`${showBtnClassName} add-button`}
+              className={`${showBtnClassName} modal-btn_show_form`}
               onClick={showForm}
             >
               +

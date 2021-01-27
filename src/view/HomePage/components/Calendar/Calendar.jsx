@@ -13,9 +13,7 @@ const Calendar = ({ trainerID }) => {
 
   const training = useSelector((state) => state.TrainingReducer.training);
 
-  const nextMonth = () => {
-    setMonth(month.clone().add(1, "month"));
-  };
+  const nextMonth = () => setMonth(month.clone().add(1, "month"));
 
   const prevMonth = () => {
     const prevMonth = month.clone().subtract(1, "month");
@@ -62,11 +60,12 @@ const Calendar = ({ trainerID }) => {
     return weeks;
   }, [training, month]);
 
-  const renderMonthLabel = useMemo(() => {
-    return (
+  const renderMonthLabel = useMemo(
+    () => (
       <MonthLabel month={month} nextMonth={nextMonth} prevMonth={prevMonth} />
-    );
-  }, [month]);
+    ),
+    [month]
+  );
 
   return (
     <div className="calendar">

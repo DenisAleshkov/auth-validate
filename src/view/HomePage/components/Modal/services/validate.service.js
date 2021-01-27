@@ -15,8 +15,8 @@ const TimeValid = {
 };
 
 const ValidateFieldTime = {
-  isValidate: function (inputs) {
-    return Boolean(TimeValid.validate(inputs));
+  isValidate: function (validateObject, inputs) {
+    return Boolean(validateObject.validate(inputs));
   },
 };
 
@@ -47,7 +47,7 @@ const TimeOnWork = {
     const isWorkUntil = WorkTime.isWorkUntil(fromHoursToNumber(inputs.to));
     const isWorkAt = WorkTime.isWorkAt(fromHoursToNumber(inputs.from));
     const workSucces = [isWorkUntil, isWorkAt].every((item) => item === false);
-    if (!ValidateFieldTime.isValidate(inputs) && !workSucces) {
+    if (!ValidateFieldTime.isValidate(TimeValid, inputs) && !workSucces) {
       return "We don`t work in this time";
     }
   },
