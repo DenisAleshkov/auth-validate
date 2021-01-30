@@ -14,6 +14,7 @@ if (!firebase.apps.length) {
 
 const App = () => {
   const isAuth = useSelector((state) => state.AuthReducer.isAuth);
+
   return (
     <div className="App">
       <Switch>

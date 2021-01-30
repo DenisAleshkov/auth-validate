@@ -1,6 +1,6 @@
 import React from "react";
 
-const Record = React.memo(({ index, email, from, to }) => {
+const Record = ({ index, email, from, to }) => {
   return (
     <div className="record-item">
       <span className="record-index">{index + 1}</span>
@@ -12,6 +12,6 @@ const Record = React.memo(({ index, email, from, to }) => {
       </div>
     </div>
   );
-});
+};
 
 export default Record;

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { Link, useHistory } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { signInSuccess } from "./../../../store/actions/auth.action";
 import { signInFromFirebase } from "./../services/auth.service";
 import {
@@ -10,6 +10,7 @@ import {
 import "./../Auth.scss";
 
 const SignIn = () => {
+  const [redirect, setRedirect] = useState(false);
   const [validateError, setValidateError] = useState({
     errorEmail: [],
     errorLogin: [],
@@ -19,7 +20,6 @@ const SignIn = () => {
     password: "",
   });
 
-  const history = useHistory();
   const dispatch = useDispatch();
 
   const signIn = (credentials) => {
@@ -34,13 +34,14 @@ const SignIn = () => {
             password,
           })
         );
-        history.push("/home");
+        setRedirect(true);
       })
       .catch((error) => {
         setValidateError({
           errorEmail: [],
           errorLogin: [error.message],
         });
+        setRedirect(false);
       });
   };
 
@@ -93,6 +94,8 @@ const SignIn = () => {
         {item}
       </span>
     ));
+
+  if (redirect) return <Redirect to="/home" />;
 
   return (
     <div className="wrapper">
