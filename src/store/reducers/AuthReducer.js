@@ -1,6 +1,9 @@
 import {
   SIGNUP_SUCCESS,
   SIGNIN_SUCCESS,
+  SIGNOUT_SUCCESS,
+  SIGNOUT_ERROR,
+  SET_USER,
 } from "./../constants";
 
 const initialState = {
@@ -9,6 +12,7 @@ const initialState = {
   email: "",
   password: "",
   confirmPassword: "",
+  signOutError: null,
 };
 
 const AuthReducer = (state = initialState, action) => {
@@ -20,7 +24,7 @@ const AuthReducer = (state = initialState, action) => {
         userId: action.payload.userId,
         email: action.payload.email,
         password: action.payload.password,
-        confirmPassword: action.payload.confirmPassword
+        confirmPassword: action.payload.confirmPassword,
       };
     }
     case SIGNIN_SUCCESS: {
@@ -30,6 +34,27 @@ const AuthReducer = (state = initialState, action) => {
         userId: action.payload.userId,
         email: action.payload.email,
         password: action.payload.password,
+      };
+    }
+    case SET_USER: {
+      return {
+        ...state,
+        isAuth: action.payload.isAuth,
+        userId: action.payload.userId,
+        email: action.payload.email,
+        password: action.payload.password,
+      };
+    }
+    case SIGNOUT_SUCCESS: {
+      return {
+        ...state,
+        isAuth: action.payload.isAuth,
+      };
+    }
+    case SIGNOUT_ERROR: {
+      return {
+        ...state,
+        signOutError: action.payload,
       };
     }
     default: {
